@@ -1,0 +1,24 @@
+{
+  "name": "efx-planning-poker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "description": "EFX Planning Poker",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],  
+  "engines": {
+    "yarn": "1.x",
+    "node": "16.x"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0",
+    "connect-history-api-fallback": "^1.6.0"
+  }
+}
