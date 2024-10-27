@@ -24,7 +24,7 @@ app.use(express.static("./dist"));
 
 function calcStatistics(votes) {
   return votes
-    .filter(v => v)
+    .filter((v) => v)
     .reduce((acc, el) => {
       if (acc[el]) {
         acc[el] += 1;
@@ -52,17 +52,17 @@ function finishRoundIfAllVoted(room) {
     room &&
     room.users &&
     Object.keys(room.users)
-      .filter(uKey => !room.users[uKey].data.user.observer)
-      .every(uKey => room.users[uKey].vote)
+      .filter((uKey) => !room.users[uKey].data.user.observer)
+      .every((uKey) => room.users[uKey].vote)
   ) {
     finishRound(room);
   }
 }
 
-io.on("connection", socket => {
+io.on("connection", (socket) => {
   console.log("connect");
 
-  socket.on("disconnect", reason => {
+  socket.on("disconnect", (reason) => {
     console.info(`Client gone [id=${socket.id}], reason: ${reason}`);
 
     const userId = socket.id;
@@ -83,7 +83,7 @@ io.on("connection", socket => {
     finishRoundIfAllVoted(room);
   });
 
-  socket.on("join", data => {
+  socket.on("join", (data) => {
     console.info("join", data);
 
     const joinedUser = { id: socket.id, data };
@@ -101,7 +101,7 @@ io.on("connection", socket => {
       });
     } else {
       const currentUsers = rooms.get(roomId).users;
-      roomUsers = Object.keys(currentUsers).map(id => ({
+      roomUsers = Object.keys(currentUsers).map((id) => ({
         id,
         name: currentUsers[id].data.user.name,
         vote:
@@ -140,7 +140,7 @@ io.on("connection", socket => {
     finishRoundIfAllVoted(room);
   });
 
-  socket.on("vote", data => {
+  socket.on("vote", (data) => {
     const userId = socket.id;
     const room = rooms.get(data.roomId);
     const roomUsers = room.users;
@@ -155,7 +155,7 @@ io.on("connection", socket => {
     finishRoundIfAllVoted(room);
   });
 
-  socket.on("show_votes", data => {
+  socket.on("show_votes", (data) => {
     const userId = socket.id;
     const room = rooms.get(data.roomId);
     console.log(`User [${userId}] requested SHOW ALL VOTES:`);
@@ -165,16 +165,19 @@ io.on("connection", socket => {
     );
     // { votes: { ...acc.votes, [uKey]: room.users[uKey].vote } },
 
-    io.in(room.roomId).emit("show_votes", { openUserId: room.users[userId].data.user.name, votes });
+    io.in(room.roomId).emit("show_votes", {
+      openUserId: room.users[userId].data.user.name,
+      votes
+    });
     finishRound(room);
   });
 
-  socket.on("clear_votes", data => {
+  socket.on("clear_votes", (data) => {
     const userId = socket.id;
     const room = rooms.get(data.roomId);
     console.log(`User [${userId}] requested CLEAR ALL VOTES:`);
     room.roundFinished = false;
-    Object.keys(room.users).forEach(uId => {
+    Object.keys(room.users).forEach((uId) => {
       room.users[uId].vote = null;
     });
     io.in(room.roomId).emit("clear_votes");
